@@ -27,3 +27,19 @@ GPIO.add_event_detect(stop_s, GPIO.FALLING, callback=stop)
 GPIO.add_event_detect(reset_s, GPIO.FALLING, callback=reset)
 GPIO.add_event_detect(freq_s, GPIO.FALLING, callback=frequencyChange)
 GPIO.add_event_detect(display_s, GPIO.FALLING, callback=display)
+
+# conversion functions
+def convertToVolts(data):
+	v = (data*3.3) / float(1023)
+	v = round(v,1)
+	return v
+
+def convertToDegreesCelsius(data):
+	t = (((data)*3.3 / float(1023)) - 0.5)/0.01
+	t = round(t,0)
+	return t
+
+def convertToLight(data):
+	t = ((data) / float(1023))*100
+	t = round(t,0)
+	return t
