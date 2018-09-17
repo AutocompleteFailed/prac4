@@ -18,6 +18,20 @@ reset_s = 23
 freq_s = 24
 display_s = 25
 
+pot_channel = 0
+tempsens_channel = 1
+ldr_channel = 2
+
+list = [500, 1000, 2000]
+
+frequency = 500
+selection = 0
+
+timer = 0
+running = False
+data_readings = ["0", "0", "0", "0", "0"]
+readings = 0
+
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
@@ -53,3 +67,28 @@ def ReadData(ch):
 	adc = sp.xfer2([1, (8+ch)<<4 ,0])
 	data = ((adc[1]&3)<<8) +adc[2]
 	return data
+
+#Pushbutton methods
+def stop(status):
+	global running
+	if (running == False):
+		global readings
+		running = True
+		readings = 0
+	else:
+		running = False
+
+def reset(status):
+	global timer
+	timer = 0
+	# x = os.system("cls")		#Windows
+	y = os.system("clear")		#Linux or Mac
+
+def frequencyChange(status):
+	global frequency
+	global selection
+	selection = selection + 1
+	if (selection>2):
+		selection = 0
+	frequency = list[selection]
+
