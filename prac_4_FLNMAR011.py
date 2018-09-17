@@ -7,6 +7,11 @@ import os
 import sys
 from datetime import datetime
 
+# Opening SPI bus
+sp = spidev.SpiDev()
+sp.open(0,0)
+sp.max_speed_hz = 1000000
+
 # setting up switches and interrupts
 stop_s = 22
 reset_s = 23
@@ -43,3 +48,8 @@ def convertToLight(data):
 	t = ((data) / float(1023))*100
 	t = round(t,0)
 	return t
+
+def ReadData(ch):
+	adc = sp.xfer2([1, (8+ch)<<4 ,0])
+	data = ((adc[1]&3)<<8) +adc[2]
+	return data
