@@ -29,7 +29,11 @@ selection = 0
 
 timer = 0
 running = False
-data_readings = ["0", "0", "0", "0", "0"]
+
+units = ['', '', 'V', 'C','%']
+
+data_readings = [['00:00:00','00:00:00.0',0.0,'00.0',0], ['00:00:00','00:00:00.0',0.0,'00.0',0], ['00:00:00','00:00:00.0',0.0,'00.0',0], ['00:00:00','00:00:00.0',0.0,'00.0',0], ['00:00:00','00:00:00.0',0.0,'00.0',0]]
+lines = [0,0,0,0,0]
 readings = 0
 
 GPIO.setwarnings(False)
@@ -92,3 +96,68 @@ def frequencyChange(status):
 		selection = 0
 	frequency = list[selection]
 
+def display(status):
+    	#print("Display fxn")
+    	Heading = "Time         Timer          Pot      Temp      Light"
+    	#units = ['', '', 'V', 'C','%']
+    
+    	for i in range(len(lines)):
+        	lines[i] = linemaker(data_readings[i])
+	
+    	print('{0}\n{1}\n{2}\n{3}\n{4}\n{5}'.format(Heading, lines[0], lines[1], lines[2], lines[3], lines[4]))
+    
+    
+    
+def linemaker(arrayofstuff):
+	global units
+    	line = str()
+    	for i in range(len(arrayofstuff)):
+        	line = line + str(arrayofstuff[i])+units[i] + "     "
+    	return(line)
+
+
+
+def addReading(p, t, l):
+	global timer
+	global data_readings
+	#str_x = print("%d\t%.1f V\t %d C\t %d%%" % (timer, p, t, l))
+	hours, rem = divmod(timer,3600000000)
+	mins, seconds = divmod(rem, 60000)
+	seconds = float(seconds)/1000
+	#print(seconds)
+	#print(timer)
+	timer_str = '{0:0>2}:{1:0>2}:{2:0>4}'.format(hours, mins, seconds)
+
+	#print( '{:%H:%M:%S}'.format(datetime.now().time()) )
+	#data = '{:%H:%M:%S} {:f} {:.1f}V {:f}C {:f}%'.format(datetime.now().time()), timer, p, t, l)
+	data = ['{:%H:%M:%S}'.format(datetime.now().time()), timer_str, '{0:0>3}'.format(p), '{0:0>4}'.format(t), l]
+	print (linemaker(data))
+	#print("New reading..........")
+	#print(datetime.now().time())
+	#print("%d" % frequency)
+	#print("%.1f V" % p)
+	#print("%d C" % t)
+	#print("%d%%" % l)
+	del data_readings[4]  # remove oldest reading
+	data_readings = [data] + data_readings # add newest to start of array
+	
+	
+Heading = "Time         Timer          Pot      Temp      Light"
+print Heading
+
+while True:
+	if(running):
+		pot = ReadData(pot_channel)
+		temp = ReadData(tempsens_channel)
+		ldr = ReadData(ldr_channel)
+		
+		potV = convertToVolts(pot)
+		tempC = convertToDegreesCelsius(temp)
+		lightM = convertToLight(ldr)
+
+		addReading(potV, tempC, lightM)
+	timer = timer + frequency
+	scnd = float(frequency)/1000
+	time.sleep(scnd)
+
+GPIO.cleanup()
