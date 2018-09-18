@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Martin Flanagan FLNMAR011
+# Martin Flanagan FLNMAR011 James Irvine IRVJAM003
 import RPi.GPIO as GPIO
 import time
 import spidev
