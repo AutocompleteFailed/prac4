@@ -97,13 +97,12 @@ def frequencyChange(status):
 
 def display(status):
     	#print("Display fxn")
-    	Heading = "Time         Timer          Pot      Temp      Light"
-    	#units = ['', '', 'V', 'C','%']
-    
-    	for i in range(len(lines)):
-            lines[i] = linemaker(data_readings[i])
-	
-    	print('{0}\n{1}\n{2}\n{3}\n{4}\n{5}'.format(Heading, lines[0], lines[1], lines[2], lines[3], lines[4]))
+        if running == False:
+            Heading = "Time         Timer          Pot      Temp      Light"
+            #units = ['', '', 'V', 'C','%']
+            for i in range(len(lines)):
+                lines[i] = linemaker(data_readings[i])
+            print('{0}\n{1}\n{2}\n{3}\n{4}\n{5}'.format(Heading, lines[0], lines[1], lines[2], lines[3], lines[4]))
     
 
 # Events for pushbuttons
