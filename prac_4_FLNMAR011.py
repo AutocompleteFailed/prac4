@@ -36,6 +36,9 @@ data_readings = [['00:00:00','00:00:00.0',0.0,'00.0',0], ['00:00:00','00:00:00.0
 lines = [0,0,0,0,0]
 readings = 0
 
+
+
+
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
@@ -45,11 +48,7 @@ GPIO.setup(reset_s, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) 	# Reset switch
 GPIO.setup(freq_s, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) 	# Frequency switch
 GPIO.setup(display_s, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) 	# Display switch
 
-# Events for pushbuttons
-GPIO.add_event_detect(stop_s, GPIO.FALLING, callback=stop)
-GPIO.add_event_detect(reset_s, GPIO.FALLING, callback=reset)
-GPIO.add_event_detect(freq_s, GPIO.FALLING, callback=frequencyChange)
-GPIO.add_event_detect(display_s, GPIO.FALLING, callback=display)
+
 
 # conversion functions
 def convertToVolts(data):
@@ -102,18 +101,24 @@ def display(status):
     	#units = ['', '', 'V', 'C','%']
     
     	for i in range(len(lines)):
-        	lines[i] = linemaker(data_readings[i])
+            lines[i] = linemaker(data_readings[i])
 	
     	print('{0}\n{1}\n{2}\n{3}\n{4}\n{5}'.format(Heading, lines[0], lines[1], lines[2], lines[3], lines[4]))
     
-    
+
+# Events for pushbuttons
+GPIO.add_event_detect(stop_s, GPIO.FALLING, callback=stop)
+GPIO.add_event_detect(reset_s, GPIO.FALLING, callback=reset)
+GPIO.add_event_detect(freq_s, GPIO.FALLING, callback=frequencyChange)
+GPIO.add_event_detect(display_s, GPIO.FALLING, callback=display)
+
     
 def linemaker(arrayofstuff):
-	global units
-    	line = str()
-    	for i in range(len(arrayofstuff)):
-        	line = line + str(arrayofstuff[i])+units[i] + "     "
-    	return(line)
+        global units
+        line = str()
+        for i in range(len(arrayofstuff)):
+            line = line + str(arrayofstuff[i])+units[i] + "     "
+        return(line)
 
 
 
@@ -143,7 +148,7 @@ def addReading(p, t, l):
 	
 	
 Heading = "Time         Timer          Pot      Temp      Light"
-print Heading
+print (Heading)
 
 while True:
 	if(running):
